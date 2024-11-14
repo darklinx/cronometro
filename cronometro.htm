@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cronómetro</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        input {
+            width: 60px;
+            margin: 10px;
+        }
+        .display {
+            font-size: 40px;
+            margin: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 16px;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Cronómetro</h1>
+
+    <!-- Formulario para ingresar el tiempo -->
+    <div>
+        <input type="number" id="minutes" placeholder="Minutos" min="0">
+        <input type="number" id="seconds" placeholder="Segundos" min="0" max="59">
+    </div>
+
+    <!-- Botones para controlar el cronómetro -->
+    <div>
+        <button onclick="startTimer()">Iniciar</button>
+        <button onclick="stopTimer()">Detener</button>
+        <button onclick="resetTimer()">Reiniciar</button>
+    </div>
+
+    <!-- Visualización del tiempo -->
+    <div id="timerDisplay" class="display">00:00</div>
+
+    <script>
+        let countdown;
+        let isRunning = false;
+        let totalTimeInSeconds = 0;
+        let currentTimeInSeconds = 0;
+
+        // Función para iniciar el cronómetro
+        function startTimer() {
+            // Si el cronómetro ya está corriendo, no hacer nada
+            if (isRunning) return;
+
+            // Obtener el tiempo ingresado por el usuario
+            const minutes = parseInt(document.getElementById('minutes').value) || 0;
+            const seconds = parseInt(document.getElementById('seconds').value) || 0;
+
+            // Convertir el tiempo a segundos
+            totalTimeInSeconds = minutes * 60 + seconds;
+            currentTimeInSeconds = totalTimeInSeconds;
+
+            // Mostrar el cronómetro en la pantalla
+            displayTime(currentTimeInSeconds);
+
+            // Iniciar el conteo regresivo
+            countdown = setInterval(function() {
+                currentTimeInSeconds--;
+                displayTime(currentTimeInSeconds);
+
+                // Si el tiempo llega a 0, detener el cronómetro
+                if (currentTimeInSeconds <= 0) {
+                    clearInterval(countdown);
+                    alert('¡El tiempo ha terminado!');
+                    isRunning = false;
+                }
+            }, 1000);
+
+            isRunning = true;
+        }
+
+        // Función para detener el cronómetro
+        function stopTimer() {
+            clearInterval(countdown);
+            isRunning = false;
+        }
+
+        // Función para reiniciar el cronómetro
+        function resetTimer() {
+            clearInterval(countdown);
+            isRunning = false;
+            currentTimeInSeconds = totalTimeInSeconds;
+            displayTime(currentTimeInSeconds);
+        }
+
+        // Función para mostrar el tiempo en formato MM:SS
+        function displayTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            document.getElementById('timerDisplay').textContent = 
+                `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+        }
+    </script>
+</body>
+</html>
